@@ -34,9 +34,7 @@ package animation;
 
 import javafx.animation.*;
 import javafx.util.Duration;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.SequentialTransition;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -48,10 +46,10 @@ import javafx.stage.Stage;
 public class Animation extends Application {
     
     private SequentialTransition sequentialTransition;
-    private SequentialTransition parallelTransition;
     
 
-   @Override public void start(Stage stage) {
+   @Override 
+   public void start(Stage stage) {
         stage.setTitle("Transitions and Timeline Animation");
         final Scene scene = new Scene(new Group(), 600, 450);
         scene.setFill(Color.WHITE);
@@ -59,6 +57,7 @@ public class Animation extends Application {
         final Rectangle rectBasicTimeline = new Rectangle(100, 50, 100, 50);
         rectBasicTimeline.setFill(Color.BROWN);
         
+        // a rectangle with rounded corners is created
         final Rectangle rectFade = new Rectangle(10, 150, 100, 100);
         rectFade.setArcHeight(20);
         rectFade.setArcWidth(20);
@@ -86,8 +85,6 @@ public class Animation extends Application {
         rectSeq.setTranslateX(50);
         rectSeq.setTranslateY(50);
         
-           
-        
         ((Group)scene.getRoot()).getChildren().addAll(rectBasicTimeline, rectFade, rectPath, rectParallel, rectSeq);
         stage.setScene(scene);
         stage.show();
@@ -100,7 +97,6 @@ public class Animation extends Application {
         timeline.getKeyFrames().add(kf);
         timeline.play();
 
-        
         FadeTransition ft = new FadeTransition(Duration.millis(3000), rectFade);
         ft.setFromValue(1.0);
         ft.setToValue(0.1);
@@ -108,11 +104,13 @@ public class Animation extends Application {
         ft.setAutoReverse(true);
         ft.play();
         
+        // a new path animation is created and applied to the rectangle
         Path path = new Path();
         path.getElements().add(new MoveTo(20,20));
         path.getElements().add(new CubicCurveTo(380, 0, 380, 120, 200, 120));
         path.getElements().add(new CubicCurveTo(0, 120, 0, 240, 380, 240));
 
+        // a path transition moves a node along a path from one end to the other over a given time
         PathTransition pathTransition = new PathTransition();
         pathTransition.setDuration(Duration.millis(4000));
         pathTransition.setPath(path);
@@ -122,7 +120,8 @@ public class Animation extends Application {
         pathTransition.setAutoReverse(true);
         pathTransition.play();
         
-         FadeTransition fadeTransition = 
+        // a fade transition changes the opacity of a node over a given time
+        FadeTransition fadeTransition = 
             new FadeTransition(Duration.millis(1000), rectSeq);
         fadeTransition.setFromValue(1.0f);
         fadeTransition.setToValue(0.3f);
@@ -151,6 +150,38 @@ public class Animation extends Application {
         scaleTransition.setCycleCount(1);
         scaleTransition.setAutoReverse(true);
         
+		// the parallel transition that executes fade, translate, rotate, and scale transitions applied to a rectangle
+		FadeTransition fadeTransitionParallel = new FadeTransition(
+				Duration.millis(3000), rectParallel);
+		fadeTransitionParallel.setFromValue(1.0f);
+		fadeTransitionParallel.setToValue(0.3f);
+		fadeTransitionParallel.setCycleCount(2);
+		fadeTransitionParallel.setAutoReverse(true);
+		TranslateTransition translateTransitionParallel = new TranslateTransition(
+				Duration.millis(2000), rectParallel);
+		translateTransitionParallel.setFromX(50);
+		translateTransitionParallel.setToX(350);
+		translateTransitionParallel.setCycleCount(2);
+		translateTransitionParallel.setAutoReverse(true);
+		RotateTransition rotateTransitionParallel = new RotateTransition(
+				Duration.millis(3000), rectParallel);
+		rotateTransitionParallel.setByAngle(180f);
+		rotateTransitionParallel.setCycleCount(4);
+		rotateTransitionParallel.setAutoReverse(true);
+		ScaleTransition scaleTransitionParallel = new ScaleTransition(
+				Duration.millis(2000), rectParallel);
+		scaleTransitionParallel.setToX(2f);
+		scaleTransitionParallel.setToY(2f);
+		scaleTransitionParallel.setCycleCount(2);
+		scaleTransitionParallel.setAutoReverse(true);
+
+		ParallelTransition parallelTransition = new ParallelTransition();
+		parallelTransition.getChildren().addAll(fadeTransitionParallel,
+				translateTransitionParallel, rotateTransitionParallel,
+				scaleTransitionParallel);
+		parallelTransition.setCycleCount(Timeline.INDEFINITE);
+		parallelTransition.play();
+            
         // create a sequential transition to do four transitions one after another
         sequentialTransition = new SequentialTransition();
         sequentialTransition.getChildren().addAll(
