@@ -24,22 +24,13 @@
 	<!-- create the jar -->
 	<target name="build" depends="prepare">
 		<jar jarfile="deploy/${project-name}.jar" basedir="${base-dir}">
-			<manifest>
-				<attribute name="Manifest-Version" value="1.0" />
-				<attribute name="JavaFX-Version" value="2.2" />
-				<attribute name="implementation-title" value="${project-name}" />
-				<attribute name="implementation-version" value="1.0" />
-				<attribute name="JavaFX-Application-Class" value="${main-class}" />
-				<attribute name="Created-By" value="Chris Wong" />
-				<attribute name="Main-Class" value="${main-class}" />
-			</manifest>
 			<zipfileset src="${jfxrt.jar}" /> 
 		</jar>
 	</target>
 	
-	<!-- run the jar -->
+	<!-- java -cp ".;${project-name}.jar" Animation.animation -->
 	<target name="run">
-	 <java jar="deploy/${project-name}.jar"
+	 <java classname="animation.Animation"
            fork="true"
            failonerror="true" >
 		   <classpath>
@@ -48,6 +39,28 @@
 		</java>
 	</target>
 	
+	<!-- java -cp ".;${project-name}.jar" Animation.AnimationInterpolator -->
+	<target name="runai">
+	 <java classname="animation.AnimationInterpolator"
+           fork="true"
+           failonerror="true" >
+		   <classpath>
+			<pathelement location="deploy/${project-name}.jar"/>
+		   </classpath>
+		</java>
+	</target>
+
+	<!-- java -cp ".;${project-name}.jar" Animation.TimelineEvents -->
+	<target name="runte">
+	 <java classname="animation.TimelineEvents"
+           fork="true"
+           failonerror="true" >
+		   <classpath>
+			<pathelement location="deploy/${project-name}.jar"/>
+		   </classpath>
+		</java>
+	</target>
+
 	<!-- clean the built files-->
 	<target name="clean">
 		<delete>
